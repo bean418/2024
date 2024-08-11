@@ -39,12 +39,12 @@ print(reg.coef_, reg.intercept_)
 
 """# **seperate data set**"""
 
+from sklearn.model_selection import train_test_split
+
 X = df.iloc[:, :-1].values
 y = df.iloc[:, -1].values
 
 help(train_test_split)
-
-from sklearn.model_selection import train_test_split
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 # random_state: set.seed in R
@@ -97,7 +97,7 @@ plt.plot(X_test, reg.predict(X_test), color = "red")
 """## **Gradient Descent**"""
 
 from sklearn.linear_model import SGDRegressor # SGD : Stochastic Gradient Descent
-sr = SGDRegressor(max_iter = 1000, eta0 = 1e-4, random_state = 0, verbose = 1) # max_iter: ephocs, eta0 = learning rate
+sr = SGDRegressor(max_iter = 100, eta0 = 1e-4, random_state = 0, verbose = 1) # max_iter: ephocs, eta0 = learning rate
 sr.fit(X_train, y_train)
 
 plt.scatter(X_train, y_train)
@@ -105,6 +105,21 @@ plt.plot(X_train, sr.predict(X_train), color = "green")
 plt.title("Score by hours")
 plt.xlabel("hours")
 plt.ylabel("score")
+
+"""learning rate가 작은데, ephocs가 작으므로 loss가 최저인 직선을 찾지 못 한 상황
+loss = 253
+"""
+
+sr2 = SGDRegressor(max_iter = 1000, eta0 = 1e-4, random_state = 0, verbose = 1) # max_iter: ephocs, eta0 = learning rate
+sr2.fit(X_train, y_train)
+
+plt.scatter(X_train, y_train)
+plt.plot(X_train, sr2.predict(X_train), color = "green")
+plt.title("Score by hours")
+plt.xlabel("hours")
+plt.ylabel("score")
+
+"""learning rate가 작지만, ephocs가 1000이기 때문에 loss가 적절히 줄어든 상황"""
 
 print("선형 회귀:", reg.coef_, reg.intercept_)
 print("SGD:", sr.coef_, sr.intercept_)
