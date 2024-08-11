@@ -71,5 +71,17 @@ print(reg.score(X_train, y_train), '\n',
 
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
 
 mean_absolute_error(y_test, y_pred)
+
+mean_squared_error(y_test, y_pred)
+
+mean_squared_error(y_test, y_pred, squared = False)
+# RMSE
+
+r2_score(y_test, y_pred)
+
+reg.score(X_test, y_test)
+
+# reg.score은 R2 값을 반환한다.
