@@ -36,3 +36,60 @@ plt.ylabel("score")
 print("9시간, 8시간 공부했을 때 예상 점수:", reg.predict([[9], [8]]))
 
 print(reg.coef_, reg.intercept_)
+
+"""# **데이터 세트 분리**"""
+
+X = df.iloc[:, :-1].values
+y = df.iloc[:, -1].values
+
+help(train_test_split)
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+# random_state: set.seed in R
+
+X, len(X)
+
+X_train, len(X_train) # test_size가 0.2이므로 train_size는 0.8, 즉 전체 데이터 개수(20) * 0.8 = 16이다.
+
+X_test, len(X_test)
+
+"""### **분리된 데이터를 통한 모델링**"""
+
+reg = LinearRegression()
+
+reg.fit(X_train, y_train) # 훈련세트로 학습
+
+"""### **데이터 시각화**"""
+
+# 훈련세트
+
+plt.scatter(X_train, y_train)
+plt.plot(X_train, reg.predict(X_train), color = "green")
+plt.title("Score by hours")
+plt.xlabel("hours")
+plt.ylabel("score")
+
+# 테스트 세트
+
+plt.scatter(X_test, y_test)
+plt.plot(X_train, reg.predict(X_train), color = "green")
+plt.title("Score by hours")
+plt.xlabel("hours")
+plt.ylabel("score")
+
+print(reg.coef_, reg.intercept_)
+
+"""### **모델 평가**"""
+
+reg.score(X_test, y_test)
+
+plt.scatter(X_test, y_test)
+plt.plot(X_test, reg.predict(X_test), color = "red")
+
+plt.plot(X_test, y_test)
+plt.plot(X_test, reg.predict(X_test), color = "red")
+
+# reg는 선형회귀모델이므로 데이터가 입력되면 predicted는 모두 한 직선 위에 위치한다.
+# 하지만 plt.plot(X_test, y_test) 는 데이터가 한 직선 위에 위치한 것이 아니므로 선을 이으면 아래와 같이 출력된다.
