@@ -37,7 +37,7 @@ print("9시간, 8시간 공부했을 때 예상 점수:", reg.predict([[9], [8]]
 
 print(reg.coef_, reg.intercept_)
 
-"""# **데이터 세트 분리**"""
+"""# **seperate data set**"""
 
 X = df.iloc[:, :-1].values
 y = df.iloc[:, -1].values
@@ -55,13 +55,13 @@ X_train, len(X_train) # test_size가 0.2이므로 train_size는 0.8, 즉 전체 
 
 X_test, len(X_test)
 
-"""### **분리된 데이터를 통한 모델링**"""
+"""### **Modeling using seperated data**"""
 
 reg = LinearRegression()
 
 reg.fit(X_train, y_train) # 훈련세트로 학습
 
-"""### **데이터 시각화**"""
+"""### **Data Visualization**"""
 
 # 훈련세트
 
@@ -81,7 +81,7 @@ plt.ylabel("score")
 
 print(reg.coef_, reg.intercept_)
 
-"""### **모델 평가**"""
+"""### **Model Evaluation**"""
 
 reg.score(X_test, y_test)
 
@@ -93,3 +93,22 @@ plt.plot(X_test, reg.predict(X_test), color = "red")
 
 # reg는 선형회귀모델이므로 데이터가 입력되면 predicted는 모두 한 직선 위에 위치한다.
 # 하지만 plt.plot(X_test, y_test) 는 데이터가 한 직선 위에 위치한 것이 아니므로 선을 이으면 아래와 같이 출력된다.
+
+"""## **Gradient Descent**"""
+
+from sklearn.linear_model import SGDRegressor # SGD : Stochastic Gradient Descent
+sr = SGDRegressor(max_iter = 1000, eta0 = 1e-4, random_state = 0, verbose = 1) # max_iter: ephocs, eta0 = learning rate
+sr.fit(X_train, y_train)
+
+plt.scatter(X_train, y_train)
+plt.plot(X_train, sr.predict(X_train), color = "green")
+plt.title("Score by hours")
+plt.xlabel("hours")
+plt.ylabel("score")
+
+print("선형 회귀:", reg.coef_, reg.intercept_)
+print("SGD:", sr.coef_, sr.intercept_)
+
+sr.score(X_train, y_train)
+
+sr.score(X_test, y_test)
