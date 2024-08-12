@@ -71,3 +71,38 @@ X.shape # 2차원
 X_new = X_new.reshape(-1, 1) # reshape(row, col) -1은 자동 계산
 X_new[:5]
 
+poly_reg = PolynomialFeatures(degree = 4)
+X_poly = poly_reg.fit_transform(X)
+reg2 = LinearRegression()
+reg2.fit(X_poly, y)
+
+def plot():
+    plt.scatter(X, y, color = "blue", label = "data")
+    plt.plot(X_new, reg2.predict(poly_reg.fit_transform(X_new)), color = "red", label = "Poly")
+    plt.plot(X, reg.predict(X), color = "green", label = "Linear")
+    plt.title("Score by hours")
+    plt.xlabel('hours')
+    plt.ylabel('score')
+    plt.legend()
+    plt.show()
+
+plot()
+
+reg2.score(X_poly, y)
+
+"""## Predict"""
+
+reg.predict([[2]]) # Linear
+
+reg2.predict(poly_reg.fit_transform([[2]])) # Polynomial
+
+poly_reg = PolynomialFeatures(degree = 20)
+X_poly = poly_reg.fit_transform(X)
+reg2 = LinearRegression()
+reg2.fit(X_poly, y)
+
+plot()
+# 과대적합 -> 훈련 데이터(족보)를 기반으로 한 분석에서는 예측이 잘 됨.
+# 실제 데이터(실제 시험)를 예측할 때는 오차가 클 수 있음.
+
+reg2.score(X_poly, y)
