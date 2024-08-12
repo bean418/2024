@@ -134,6 +134,50 @@ df.iloc[[2]]
 """### 영화의 제목을 입력하면 코사인 유사도를 통해 가장 유사도가 높은 상위 10개 영화 목록 반환하는 함수"""
 
 def get_recommendations(title, cosine_sim = cosine_sim):
-    pass
+    # 영화 제목을 통해서 전체 데이터 기준 그 영화의 index 값을 얻기
+    idx = indices[title]
 
-test_idx = indicies[]
+    # 코사인 유사도 매트릭스(cosine_sim)에서 idx에 해당하는 데이터를 [idx, 유사도] 형태로 얻기
+    sim_scores = list(enumerate(cosine_sim[idx]))
+
+    # 코사인 유사도 기준으로 내림차순 정렬
+    sim_scores = sorted(sim_scores, key = lambda x: x[1], reverse = True)
+
+    # 자기 자신(코사인 유사도 = 1)을 제외한 10개의 추천 영화를 슬라이싱
+    sim_scores = sim_scores[1:11]
+
+    # 추천 영화 목록 10개의 인덱스 정보 추출
+    movie_indices = [i[0] for i in sim_scores]
+
+    # 인덱스 정보를 통해 영화 제목 추출
+    return(df['title'].iloc[movie_indices])
+
+# test_idx = indices["The Dark Knight Rises"] # 영화 제목을 통해서 전체 데이터 기준 그 영화의 index 값을 얻기
+# test_idx -> 3
+
+# test_sim_scores = list(enumerate(cosine_sim[3])) # 코사인 유사도 매트릭스 (cosine_sim)에서 idx에 해당하는 데이터를 [idx, 유사도] 형태로 얻기
+
+# test_sim_scores = sorted(test_sim_scores, key = lambda x: x[1], reverse = True)
+# test_sim_scores[1:11] # 자기 자신을 제외한 10개의 추천 영화를 슬라이싱
+# 인덱스 0에는 자기 자신(추천도가 가장 높음)이 위치해있음.
+
+# lambda 알아보기
+# def get_second(x):
+#    return x[1]
+
+# lst = ['인덱스', '유사도']
+# print(get_second(lst))
+
+# (lambda x : x[1])(lst)
+
+# 추천 영화
+# test_movie_indices = [i[0] for i in test_sim_scores[1:11]]
+# test_movie_indices
+
+df['title'][:20]
+
+get_recommendations("Avengers: Age of Ultron")
+
+get_recommendations("The Avengers")
+
+get_recommendations("Avatar")
