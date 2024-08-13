@@ -86,9 +86,10 @@ indices = pd.Series(df.index, index=df['title'])
 
 # Save the movies DataFrame and cosine similarity matrix for future use
 movies = df[['id', 'title']].copy()
-pickle.dump(movies, open('movies.pickle', 'wb'))
-pickle.dump(cosine_sim2, open("cosine_sim.pickle", 'wb'))
+
+# pickle.dump(movies, open('movies.pickle', 'wb'))
+# pickle.dump(cosine_sim2, open("cosine_sim.pickle", 'wb'))
 
 # Example usage
-print(get_recommendations("The Dark Knight Rises", cosine_sim2))
-print(get_recommendations("Interstellar", cosine_sim2))
+# print(get_recommendations("The Dark Knight Rises", cosine_sim2))
+# print(get_recommendations("Interstellar", cosine_sim2))
