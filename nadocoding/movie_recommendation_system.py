@@ -181,3 +181,134 @@ get_recommendations("Avengers: Age of Ultron")
 get_recommendations("The Avengers")
 
 get_recommendations("Avatar")
+
+"""# 3. Credits, Genres and Keywords Based Recommender"""
+
+df.head(3)
+
+df.loc[0, 'genres']
+
+s1 = [{"id": 28, "name": "Action"}]
+s2 = '[{"id": 28, "name": "Action"}]'
+
+type(s1), type(s2)
+
+from ast import literal_eval
+s2 = literal_eval(s2)
+s2, type(s2)
+
+print(s1)
+print(s2)
+
+# 따라서 literal_eval -> '[{~~}]'처럼 리스트 형태로 입력된 문자열을 리스트로 변환해줌.
+
+features = ['cast', 'crew', 'keywords', 'genres']
+for feature in features:
+    df[feature] = df[feature].apply(literal_eval)
+
+df.loc[0, 'crew']
+
+# crew에서 job이 director인 사람의 name만 가져오는 함수를 만들어야 함.
+
+def get_director(dic_list):
+    for i in dic_list:
+        if i['job'] == 'Director':
+            return i['name']
+    return np.nan
+
+df['director'] = df['crew'].apply(get_director)
+df['director']
+
+df[df['director'].isnull()]
+
+df.loc[0, 'cast']
+
+df.loc[0, 'genres']
+
+df.loc[0, 'keywords']
+
+# We are going to build a recommender based on the following metadata:
+# the 3 top actors, the director, related genres and the movie plot keywords.
+
+def get_list(x):
+    if isinstance(x, list):
+        names = [i['name'] for i in x]
+        if len(names) > 3:
+            names = names[:3]
+        return names
+    return [] # exception
+
+features = ['cast', 'keywords', 'genres']
+for feature in features:
+    df[feature] = df[feature].apply(get_list)
+
+df[['title', 'cast', 'director', 'keywords', 'genres']].head(3)
+
+'''
+The next step would be to convert the names and keyword instances into lowercase
+and strip all the spaces between them.
+This is done so that our vectorizer doesn't count
+the Johnny of "Johnny Depp" and "Johnny Galecki" as the same.
+'''
+
+def clean_data(x):
+    if isinstance(x, list):
+        return [str.lower(i.replace(' ', '')) for i in x]
+    else:
+        if isinstance(x, str):
+            return str.lower(x.replace(' ', ''))
+        else:
+            return ''
+
+features = ['cast', 'keywords','director', 'genres']
+for feature in features:
+    df[feature] = df[feature].apply(clean_data)
+
+df[['title', 'cast', 'director', 'keywords', 'genres']].head(3)
+
+'''
+We are now in a position to create our "metadata soup",
+which is a string that contains all the metadata that we want to feed to our vectorizer
+(namely actors, director and keywords).
+
+키워드, 캐스트, 감독, 장르 등을 공백으로 구분한 일명 '중요 데이터 잡탕'을 만든다.
+'''
+
+def create_soup(x):
+    return ' '.join(x['keywords']) + ' ' + ' '.join(x['cast']) + ' ' + x['director'] + ' ' + ' '.join(x['genres'])
+df['soup'] = df.apply(create_soup, axis=1)
+
+df['soup'][:3]
+
+df['overview'][:3]
+
+# soup은 마치 overview처럼 공백으로 구분된 중요 단어들의 나열처럼 보임.
+
+'''
+The next steps are the same as what we did with our plot description based recommender.
+One important difference is that we use the CountVectorizer() instead of TF-IDF.
+This is because we do not want to down-weight the presence of an actor/director
+if he or she has acted or directed in relatively more movies. It doesn't make much intuitive sense.
+
+이전에 했던 것처럼 단어의 개수에 따른 코사인 유사도를 측정하면 된다.
+중요한 차이점은 overview와 달리 soup에서 반복되는 단어들은 down-weight해서는 안된다.
+overview에서 반복되는 단어들은 주로 a, the, in 등 전치사나 관사(중요하지 않은 단어)이고
+soup에서 반복되는 단어들은 배우, 감독 등 중요한 단어들이므로 가중치가 동일해야 한다.
+'''
+
+from sklearn.feature_extraction.text import CountVectorizer
+
+cnt = CountVectorizer(stop_words = 'english')
+cnt_matrix = cnt.fit_transform(df['soup'])
+
+cnt_matrix
+
+from sklearn.metrics.pairwise import cosine_similarity
+cosine_sim2 = cosine_similarity(cnt_matrix, cnt_matrix)
+cosine_sim2
+
+indices[:3]
+
+# Reset index of our main DataFrame and construct reverse mapping as before
+df2 = df2.reset_index()
+indices = pd.Series(df2.index, index=df2['title'])
