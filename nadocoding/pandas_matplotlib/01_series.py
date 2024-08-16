@@ -11,3 +11,13 @@ import pandas as pd
 
 temp = pd.Series([-20, -10, 10, 20])
 temp
+
+temp[0]
+
+temp[1]
+
+"""## Series Index"""
+
+temp = pd.Series([-20, -10, 10, 20], index = ["Jan", "Feb", "Mar", "Apr"])
+
+temp["Mar"]
