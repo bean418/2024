@@ -26,13 +26,53 @@ plt.show()
 
 """## 한글 폰트 설정"""
 
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
+
+# Download and install NanumGothic fonts manually
+!wget https://github.com/google/fonts/raw/main/ofl/nanumgothic/NanumGothic-Regular.ttf
+
+# Refresh font cache
+!fc-cache -fv
+
+# Clear matplotlib font cache
+!rm ~/.cache/matplotlib -rf
+
+# Add the current directory to font manager's search path
+font_dirs = './'
+font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
+
+'''
+What it means: The root directory (/) is the top-level directory
+of the entire file system in a Linux environment.
+
+What it means: The ./ refers to the current working directory,
+which is /content/ in Google Colab.
+
+Using './': This is optimal when dealing with fonts
+you have uploaded or downloaded in Colab.
+
+Using '/': This will include system-wide fonts,
+but may take more time and may not be necessary
+unless you want to search the entire file system for fonts.
+'''
+
+# Add the font files to matplotlib's font manager
+for font_file in font_files:
+    font_manager.fontManager.addfont(font_file)
+
+# Set the NanumGothic font (or any other font available in the current directory)
+plt.rc('font', family='NanumGothic')
+
+
 import matplotlib.font_manager as fm
 # fm.fontManager.ttflist # 사용 가능한 폰트 확인
 [f.name for f in fm.fontManager.ttflist]
 
 import matplotlib as mp
-mp.rcParams['font.family'] = "AppleGothic"
+# mp.rcParams['font.family'] = "AppleGothic"
 mp.rcParams['font.size'] = 15
 mp.rcParams['axes.unicode_minus'] = False # 한글 폰트 사용 시, 마이너스 글자가 깨지는 현상 해결
 
 plt.plot([-1, 0, 1], [-5, 1, 2])
+plt.title("한글 타이틀")
