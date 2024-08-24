@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1mBBf7YUEh_8HmX9IF407ryYSiB21Hxrf
 """
 
-print('helo')
-
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib as mp
