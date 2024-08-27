@@ -34,3 +34,5 @@ plt.plot(x, y, marker='o')
 
 for idx, txt in enumerate(y):
     plt.text()
+
+# 240827
