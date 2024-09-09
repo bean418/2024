@@ -1,4 +1,5 @@
 library(readxl)
+library(ggplot2)
 setwd("/Users/bean418/PCRL")
 dir()
 
@@ -75,23 +76,23 @@ for(h in 1:9){
       y_nh3[cnt] = mean(df_nh3[,i+1][df_nh3[,i] == j])
       cnt = cnt + 1
     }
-    filename <- sprintf("M%d chip_%doC.png", h, temp)
-    png(filename=filename,width=6000,height=4000,res=500)
-    plot(x_ac, y_ac,
-         xlim=c(min(x_ac,x_nh3), max(x_ac,x_nh3)),
-         ylim=c(min(y_ac,y_nh3), max(y_ac,y_nh3)),
-         type='l',
-         col='black', lwd=2,
-         main='Acetone vs NH3',
-         xlab='TimeElapsed (sec)',
-         ylab='Resistance (Ohm)'
-    )
-    points(x_nh3, y_nh3, type='l',col='red', lwd=2)
-    legend("topright", legend=c("Acetone", "NH3"),
-           col=c("black", "red"), lty=1, lwd=2)
+    
+    gg_ac = data.frame(x=x_ac,y=y_ac)
+    gg_nh3 = data.frame(x=x_nh3,y=y_nh3)
+    
+    ggplot() +
+      geom_line(data = gg_ac, aes(x = x, y = y, color = "Acetone")) +
+      geom_line(data = gg_nh3, aes(x = x, y = y, color = "NH3")) +
+      labs(title = 'Acetone vs NH3',
+           x = 'TimeElapsed (sec)',
+           y = 'Resistance (Ohm)',
+           color = 'Substance') +
+      scale_color_manual(values = c("Acetone" = "blue", "NH3" = "red"))
+    
+    filename <- sprintf("./plts/M%d_chip_%doC.png", h, temp)
+    ggsave(filename = filename)
     
     i = i+1
     temp = temp+50
-    dev.off()
   }
 }
