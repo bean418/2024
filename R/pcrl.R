@@ -76,7 +76,7 @@ for(h in 1:9){
       cnt = cnt + 1
     }
     filename <- sprintf("M%d chip_%doC.png", h, temp)
-    png(filename=filename,width=4000,height=3000,res=500)
+    png(filename=filename,width=6000,height=4000,res=500)
     plot(x_ac, y_ac,
          xlim=c(min(x_ac,x_nh3), max(x_ac,x_nh3)),
          ylim=c(min(y_ac,y_nh3), max(y_ac,y_nh3)),
@@ -87,8 +87,8 @@ for(h in 1:9){
          ylab='Resistance (Ohm)'
     )
     points(x_nh3, y_nh3, type='l',col='red', lwd=2)
-    legend("left", legend=c("Acetone", "NH3"),
-           col=c("black", "red"), lty=1)
+    legend("topright", legend=c("Acetone", "NH3"),
+           col=c("black", "red"), lty=1, lwd=2)
     
     i = i+1
     temp = temp+50
