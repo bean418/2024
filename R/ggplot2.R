@@ -6,7 +6,7 @@ dir()
 # Mh chip
 # i = 1 -> 300o, i = 3 -> 350o, ...
 for(h in 1:9){
-  sheet = sprintf("M%d chip", h)
+  sheet = paste0("M",h," chip")
   
   at = read_excel("Resistance_Acetone.xlsx", sheet=sheet)
   nh3 = read_excel("Resistance_NH3.xlsx", sheet=sheet)
@@ -63,14 +63,14 @@ for(h in 1:9){
     y_ac=c()
     y_nh3=c()
     cnt = 1
-    for(j in x_ac){
-      y_ac[cnt] = mean(df_ac[,i+1][df_ac[,i] == j])
+    for(sec in x_ac){
+      y_ac[cnt] = mean(df_ac[,i+1][df_ac[,i] == sec])
       
       cnt = cnt + 1
     }
     cnt = 1
-    for(j in x_nh3){
-      y_nh3[cnt] = mean(df_nh3[,i+1][df_nh3[,i] == j])
+    for(sec in x_nh3){
+      y_nh3[cnt] = mean(df_nh3[,i+1][df_nh3[,i] == sec])
       cnt = cnt + 1
     }
     
@@ -86,7 +86,8 @@ for(h in 1:9){
            color = 'Substance') +
       scale_color_manual(values = c("Acetone" = "blue", "NH3" = "red"))
     
-    filename <- sprintf("./plts/M%d_chip_%doC.png", h, temp)
+    filename <- paste0("./plts/M", h, "_chip_",
+    temp, "oC.png")
     ggsave(filename = filename)
     
     i = i+1
