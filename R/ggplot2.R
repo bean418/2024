@@ -3,23 +3,20 @@ library(ggplot2)
 setwd("/Users/bean418/PCRL")
 dir()
 
+# Mh chip
+# i = 1 -> 300o, i = 3 -> 350o, ...
 for(h in 1:9){
   sheet = sprintf("M%d chip", h)
   
   at = read_excel("Resistance_Acetone.xlsx", sheet=sheet)
   nh3 = read_excel("Resistance_NH3.xlsx", sheet=sheet)
-  head(at)
   
   # numeric
   # Acetone
   nr_at = nrow(at)-1
-  rn_at = rownames(at);rn_at
-  cn_at = colnames(at);cn_at
   ncol(at)
   # NH3
   nr_nh3 = nrow(nh3)-1
-  rn_nh3 = rownames(nh3)
-  cn_nh3 = colnames(nh3)
   ncol(nh3)
   
   
@@ -57,7 +54,7 @@ for(h in 1:9){
   # ploting
   temp = 300
   for(i in seq(from=1, to=ncol(df_ac), by=2)){
-    cat("현재 i는", i, "현재 temp는", temp)
+    # cat("현재 i는", i, "현재 temp는", temp,'\n')
     x_ac=c()
     x_nh3=c()
     x_ac=unique(df_ac[,i])
