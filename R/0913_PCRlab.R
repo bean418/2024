@@ -2,6 +2,28 @@ library(readxl)
 library(ggplot2)
 setwd("/Users/bean418/PCRL")
 dir()
+#### 함수 ####
+x <- seq(30000, 40300, by = 100);x
+
+start_value <- 30000
+interval <- 4500
+range_size <- 1200
+
+index_data <- function(x, start, interval, range_size) {
+  max_value <- max(x)
+  indices <- logical(length(x))
+  
+  current_start <- start
+  while(current_start <= max_value) {
+    indices <- indices | (x >= current_start & x < (current_start + range_size))
+    current_start <- current_start + interval
+  }
+  
+  return(x[indices])
+}
+
+x=seq(1,100);x
+index_data(x, 0, 2, 5)
 
 # Mh chip
 # i = 1 -> 300o, i = 3 -> 350o, ...
@@ -68,6 +90,9 @@ for(h in 1:9){
     x_ac=x_ac[x_ac >= 30000]
     x_nh3=x_nh3[x_nh3 >= 30000]
     
+    # 3만부터 1200 만큼의 데이터를
+    # 4500을 주기로 추출.
+    
     y_ac=c()
     y_nh3=c()
     cnt = 1
@@ -92,18 +117,7 @@ for(h in 1:9){
            x = 'TimeElapsed (sec)',
            y = 'Resistance (Ohm)',
            color = 'Substance') +
-      scale_color_manual(values = c("Acetone" = "blue", "NH3" = "red")) +
-      geom_vline(xintercept = seq(from=30000,
-                                  to=max(x_ac,x_nh3),
-                                  by=4500), 
-                 color = "plum", 
-                 size = 0.7) +
-      geom_vline(xintercept = seq(from=31200,
-                                  to=max(x_ac,x_nh3),
-                                  by=4500), 
-                 color = "skyblue", 
-                 linetype = "dashed", 
-                 size = 0.7)
+      scale_color_manual(values = c("Acetone" = "blue", "NH3" = "red"))
     
     filename <- paste0("./plts/M", h, "_chip_",
                        temp, "oC.png")
@@ -113,3 +127,4 @@ for(h in 1:9){
     temp = temp+50
   }
 }
+
