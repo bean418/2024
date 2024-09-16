@@ -5,8 +5,16 @@ dir()
 # 함수
 {
 # indexing
-index_data <- function(x, start, interval, range_size) {
-  max_value <- max(x)
+index_data <- function(x, interval, range_size) {
+  
+  x_clean <- x[!is.na(x)]
+  
+  if(length(x_clean) == 0) {
+    return(x)
+  }
+  
+  start <- min(x, na.rm=T)
+  max_value <- max(x, na.rm=T)
   indices <- logical(length(x))
   
   current_start <- start
@@ -66,6 +74,12 @@ for(h in 1:9){
   df_nh3[, col] <- lapply(df_nh3[, col],
                          replace_30000toNA)
   
+  df_at[, col] <- lapply(df_at[, col],
+    function(x) index_data(x, 4500, 1200))
+  df_nh3[, col] <- lapply(df_nh3[, col],
+    function(x) index_data(x, 4500, 1200))
+  
+  
   # ploting
   temp = 300
   for(i in seq(from=1, to=ncol(df_at), by=2)){
@@ -76,13 +90,8 @@ for(h in 1:9){
     x_at=x_at[!is.na(x_at)]
     x_nh3=x_nh3[!is.na(x_nh3)]
     
-    x_at=x_at[x_at >= 30000]
-    x_nh3=x_nh3[x_nh3 >= 30000]
-    
-    y_at <- tapply(df_at[,i+1], df_at[,i],
-                   function(x) mean(x,na.rm=T))
-    y_nh3 <- tapply(df_nh3[,i+1], df_nh3[,i],
-                    function(x) mean(x,na.rm=T))
+    y_at <- tapply(df_at[,i+1], df_at[,i],mean)
+    y_nh3 <- tapply(df_nh3[,i+1], df_nh3[,i],mean)
     
     gg_at = data.frame(x=x_at,y=y_at)
     gg_nh3 = data.frame(x=x_nh3,y=y_nh3)
@@ -94,7 +103,19 @@ for(h in 1:9){
            x = 'TimeElapsed (sec)',
            y = 'Resistance (Ohm)',
            color = 'Substance') +
-      scale_color_manual(values = c("Acetone" = "blue", "NH3" = "red"))
+      scale_color_manual(values = c("Acetone" = "blue", "NH3" = "red")) +
+      geom_vline(xintercept = seq(from=30000,
+                                  to=max(x_ac,x_nh3),
+                                  by=4500), 
+                 color = "plum", 
+                 size = 0.7) +
+      geom_vline(xintercept = seq(from=31200,
+                                  to=max(x_ac,x_nh3),
+                                  by=4500), 
+                 color = "skyblue", 
+                 linetype = "dashed", 
+                 size = 0.7)
+    
     
     
     filename <- paste0("./plts/M", h, "_chip_",
