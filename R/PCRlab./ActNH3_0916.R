@@ -2,7 +2,9 @@ library(readxl)
 library(ggplot2)
 setwd("/Users/bean418/PCRL")
 dir()
-#### 함수 ####
+# 함수
+{
+# indexing
 x <- seq(30000, 60600, by = 100);x
 index_data(x, min(x), 4500, 1200)
 
@@ -20,6 +22,27 @@ index_data <- function(x, start, interval, range_size) {
   return(x)
 }
 
+# numeric
+convert_to_numeric <- function(df) {
+  if (ncol(df) == 9) {
+    df <- df[, -2]  # 2번째 열 제거
+  }
+  return(as.data.frame(lapply(df[2:nrow(df), ],
+                              as.numeric)))
+}
+
+# rounding
+round_columns <- function(df, columns) {
+  df[, columns] <- lapply(df[, columns], function(x) (round(x / 100) * 100))
+  return(df)
+}
+
+# end of func. part
+}
+
+# initialization
+col = c(1,3,5,7)
+
 # Mh chip
 # i = 1 -> 300o, i = 3 -> 350o, ...
 for(h in 1:9){
@@ -36,30 +59,23 @@ for(h in 1:9){
   nr_nh3 = nrow(nh3)-1
   ncol(nh3)
   
+  # preprocessing
+  df_at <- convert_to_numeric(at)
+  df_nh3 <- convert_to_numeric(nh3)
   
-  # Acetone
-  if(ncol(at)==9){
-    df_at <- as.data.frame(lapply(at[2:nrow(at), -2], as.numeric))
-  } else{
-    df_at <- as.data.frame(lapply(at[2:nrow(at), ], as.numeric))
+  df_at <- round_columns(df_at, col)
+  df_nh3 <- round_columns(df_nh3, col)
+  
+  
+  replace_below_threshold <- function(x) {
+    x[x < 30000] <- NA
+    return(x)
   }
   
-  # NH3
-  if(ncol(nh3)==9){
-    df_nh3 <- as.data.frame(lapply(nh3[2:nrow(nh3), -2], as.numeric))
-  } else{
-    df_nh3 <- as.data.frame(lapply(nh3[2:nrow(nh3), ], as.numeric))
-  }
-  
-  
-  # rounding
-  df_at[, c(1, 3, 5, 7)] <- lapply(df_at[, c(1, 3, 5, 7)],
-                                   function(x) (round(x / 100) * 100))
-  df_nh3[, c(1, 3, 5, 7)] <- lapply(df_nh3[, c(1, 3, 5, 7)],
-                                    function(x) (round(x / 100) * 100))
-  
-  
-  
+  # df_at의 1, 3, 5, 7열에 함수 적용
+  columns_to_modify <- c(1, 3, 5, 7)
+  df_at[, columns_to_modify] <- lapply(df_at[, columns_to_modify],
+                                       replace_below_threshold)
   
   
   # ploting
@@ -69,19 +85,12 @@ for(h in 1:9){
     x_at=unique(df_at[,i])
     x_nh3=unique(df_nh3[,i])
     
-    y_at=c()
-    y_nh3=c()
-    cnt = 1
-    for(sec in x_at){
-      y_at[cnt] = mean(df_at[,i+1][df_at[,i] == sec])
-      
-      cnt = cnt + 1
-    }
-    cnt = 1
-    for(sec in x_nh3){
-      y_nh3[cnt] = mean(df_nh3[,i+1][df_nh3[,i] == sec])
-      cnt = cnt + 1
-    }
+    x_at=x_at[x_at >= 30000]
+    x_nh3=x_nh3[x_nh3 >= 30000]
+    
+    y_at <- tapply(df_at[,i+1], df_at[,i],
+                   function(x) mean(x,na.rm=T))
+    y_nh3 <- tapply(df_nh3[,i+1], df_nh3[,i], mean(na.rm=T))
     
     gg_at = data.frame(x=x_at,y=y_at)
     gg_nh3 = data.frame(x=x_nh3,y=y_nh3)
@@ -96,11 +105,10 @@ for(h in 1:9){
       scale_color_manual(values = c("Acetone" = "blue", "NH3" = "red"))
     
     
-    filename <- paste0("./plts2/M", h, "_chip_",
+    filename <- paste0("./plts/M", h, "_chip_",
                        temp, "oC.png")
     ggsave(filename = filename)
     
-    i = i+1
     temp = temp+50
   }
 }
