@@ -5,9 +5,6 @@ dir()
 # 함수
 {
 # indexing
-x <- seq(30000, 60600, by = 100);x
-index_data(x, min(x), 4500, 1200)
-
 index_data <- function(x, start, interval, range_size) {
   max_value <- max(x)
   indices <- logical(length(x))
@@ -37,6 +34,12 @@ round_columns <- function(df, columns) {
   return(df)
 }
 
+# below30000_toNA
+below30000_toNA <- function(x) {
+  x[x < 30000] <- NA
+  return(x)
+}
+
 # end of func. part
 }
 
@@ -51,14 +54,6 @@ for(h in 1:9){
   at = read_excel("Resistance_Acetone.xlsx", sheet=sheet)
   nh3 = read_excel("Resistance_NH3.xlsx", sheet=sheet)
   
-  # numeric
-  # Acetone
-  nr_at = nrow(at)-1
-  ncol(at)
-  # NH3
-  nr_nh3 = nrow(nh3)-1
-  ncol(nh3)
-  
   # preprocessing
   df_at <- convert_to_numeric(at)
   df_nh3 <- convert_to_numeric(nh3)
@@ -66,17 +61,10 @@ for(h in 1:9){
   df_at <- round_columns(df_at, col)
   df_nh3 <- round_columns(df_nh3, col)
   
-  
-  replace_below_threshold <- function(x) {
-    x[x < 30000] <- NA
-    return(x)
-  }
-  
-  # df_at의 1, 3, 5, 7열에 함수 적용
-  columns_to_modify <- c(1, 3, 5, 7)
-  df_at[, columns_to_modify] <- lapply(df_at[, columns_to_modify],
-                                       replace_below_threshold)
-  
+  df_at[, col] <- lapply(df_at[, col],
+                         replace_30000toNA)
+  df_nh3[, col] <- lapply(df_nh3[, col],
+                         replace_30000toNA)
   
   # ploting
   temp = 300
@@ -85,12 +73,16 @@ for(h in 1:9){
     x_at=unique(df_at[,i])
     x_nh3=unique(df_nh3[,i])
     
+    x_at=x_at[!is.na(x_at)]
+    x_nh3=x_nh3[!is.na(x_nh3)]
+    
     x_at=x_at[x_at >= 30000]
     x_nh3=x_nh3[x_nh3 >= 30000]
     
     y_at <- tapply(df_at[,i+1], df_at[,i],
                    function(x) mean(x,na.rm=T))
-    y_nh3 <- tapply(df_nh3[,i+1], df_nh3[,i], mean(na.rm=T))
+    y_nh3 <- tapply(df_nh3[,i+1], df_nh3[,i],
+                    function(x) mean(x,na.rm=T))
     
     gg_at = data.frame(x=x_at,y=y_at)
     gg_nh3 = data.frame(x=x_nh3,y=y_nh3)
