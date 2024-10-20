@@ -69,3 +69,5 @@ chi <- 632.79-560.87
 pchisq(chi,df=1,lower.tail = F)
 
 #4
+rm(list=ls())
+df <- read.csv("http://www.stat.ufl.edu/~aa/cat/data/Shuttle.dat")
