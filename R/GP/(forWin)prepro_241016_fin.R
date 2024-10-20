@@ -3,11 +3,11 @@ library(ggplot2)
 
 rm(list=ls())
 
-setwd("C:/Users/imb2a/Desktop/study/GPSig/dat")
+setwd("C:/Users/Admin/Desktop/")
 getwd()
 
 # train
-files <- paste0("C:/Users/imb2a/Desktop/study/GPSig/dat/sensor", 1:4, ".csv")
+files <- paste0("C:/Users/Admin/Desktop/sensor", 1:4, ".csv")
 
 df_list <- list()
 
@@ -46,7 +46,7 @@ ggplot() +
   geom_line(data = s2, aes(x = 1:2200, y = X49, color = "sensor2")) +
   geom_line(data = s3, aes(x = 1:2200, y = X49, color = "sensor3")) +
   geom_line(data = s4, aes(x = 1:2200, y = X49, color = "sensor4")) +
-  labs(title = 'X19에서의 시계열 분포',
+  labs(title = 'X49에서의 시계열 분포',
        x = 'Time(1~2254)',
        y = 'X35',
        color = 'Substance') +

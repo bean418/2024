@@ -70,4 +70,65 @@ pchisq(chi,df=1,lower.tail = F)
 
 #4
 rm(list=ls())
-df <- read.csv("http://www.stat.ufl.edu/~aa/cat/data/Shuttle.dat")
+df <- read.csv('C:/Users/Admin/git/R/inha_assignments/Shuttle.txt')
+head(df)
+
+model <- glm(TD~Temp, family=binomial(link='logit'),
+             data=df)
+summary(model)
+
+exp(-0.232)
+
+predict(model, newdata = data.frame(Temp = 31),
+        type = "response")
+
+B1 <- -0.2322
+se_B1 <- 0.1082
+
+chi <- (B1/se_B1)**2
+chi
+pchisq(chi, df=1, lower.tail = F)
+
+likeli <- 28.267-20.315;likeli
+pchisq(likeli, df=1, lower.tail = F)
+
+# temp = 66
+pred <- predict(model, newdata = data.frame(Temp = 66), type = "link", se.fit = TRUE)
+fit <- pred$fit;fit
+se <- pred$se.fit;se
+
+ci <- fit + c(-1, 1) * qnorm(0.995) * se
+ci
+prob_ci <- exp(ci) / (1 + exp(ci))
+prob_ci
+
+#5
+load('C:/Users/Admin/git/R/inha_assignments/Crabs.RData')
+df <- Crabs
+
+model <- glm(y~factor(color),
+               data=df,
+               family=binomial)
+summary(model)
+
+chi <- 225.76-212.06;chi
+pchisq(chi, df=3, lower.tail = F)
+
+model <- glm(y~color,
+             data=df,
+             family=binomial)
+summary(model)
+
+exp(-0.7147)
+1-exp(-0.7147)
+
+B1 <- -0.7147
+se_B1 <- 0.2095
+z <- B1/se_B1
+z2 <- z**2;z2
+
+pchisq(z2, df=1, lower.tail = F)
+
+summary(model)
+chi <- 225.76-213.30;chi
+pchisq(chi, df=1, lower.tail = F)
