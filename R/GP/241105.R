@@ -73,10 +73,10 @@ rownames(df_gas) <- NULL
 df_list <- list(df_co2_org)
 
 for (i in 1:39) {
-  noisy_data <- data.frame(co2 = add_noise( (df_co2_org$co2+5000) ))
+  noisy_data <- data.frame(co2 = add_noise( (df_co2_org$co2*0) ))
   df_list[[i+1]] <- noisy_data
 }
-df_list[[1]] <- data.frame(co2 = add_noise(df_co2_org$co2+5000))
+df_list[[1]] <- data.frame(co2 = add_noise(df_co2_org$co2*0))
 
 df_co2_5000 <- do.call(rbind, df_list)
 
