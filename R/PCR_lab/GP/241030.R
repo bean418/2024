@@ -1,5 +1,8 @@
 library(ggplot2)
 
+# home pc dir: 'C:\\Users\\Admin\\Desktop\\gpsig\\data'
+# lab. pc dir: 'C:\\Users\\imb2a\\Desktop\\study\\GPSig\\dat\\co2_gas'
+
 rm(list=ls())
 setwd('C:\\Users\\imb2a\\Desktop\\study\\GPSig\\dat\\co2_gas')
 getwd()
