@@ -19,10 +19,10 @@ df_gas <- read.csv("GAS.csv")
 head(df_co2)
 
 # str(df_co2) -> 데이터가 문자열이다.
-# numeric으로 바꿈, 첫 번째 열(시간) 제외, 첫 번째 행(SENSOR) 제외
-df_co2 <- as.data.frame(lapply(df_co2[2:137, 2:81],
+# numeric으로 바꿈, 초반부 데이터 제외.
+df_co2 <- as.data.frame(lapply(df_co2[108:137, 2:81],
                                as.numeric))
-df_gas <- as.data.frame(lapply(df_gas[2:137, 2:81],
+df_gas <- as.data.frame(lapply(df_gas[108:137, 2:81],
                                as.numeric))
 
 # 열 이름 재설정

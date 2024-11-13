@@ -90,3 +90,66 @@ end = 16
                                   "BD4-5" = "skyblue",
                                   "BD5-5" = "purple"))
 }
+
+#CO2 센서마다 차이가 있는가
+# 데이터 준비
+board = 5
+start = 1
+end = 16
+# plot
+{
+  sensors <- paste0("BD",board,"_SEN", start:end)
+  colors <- c("gray13", "blue", "green", "skyblue", "red",
+              "aquamarine", "skyblue4", "darkolivegreen",
+              "darkolivegreen1", "orange4", "navy", "darkgreen",
+              "turquoise3", "yellow3", "gray", "black")
+  labels <- paste0("BD",board,"_S", start:end)
+  
+  # 기본 플롯 생성
+  p <- ggplot(df_co2, aes(x = 1:136))
+  
+  # 반복문으로 geom_line 추가
+  for (i in seq_along(sensors)) {
+    p <- p + geom_line(aes_string(y = sensors[i], color = shQuote(labels[i])))
+  }
+  
+  # 나머지 설정 추가
+  title <- paste0("CO2, diff. between each sensors in board", board)
+  p <- p + 
+    labs(title = title,
+         x = 'Time(2min)', 
+         y = 'value',
+         color = 'Substance') +
+    scale_color_manual(values = setNames(colors, unique(labels)))
+  
+  # 플롯 출력
+  print(p)
+}
+
+#CO2 보드마다 차이가 있는가
+{
+  board = 1:5
+  sensors <- paste0("BD",board,"_SEN5")
+  colors <- c("red", "blue", "green", "skyblue", "purple")
+  labels <- paste0("BD",board,"_S", 5)
+  
+  # 기본 플롯 생성
+  p <- ggplot(df_co2, aes(x = 1:136))
+  
+  # 반복문으로 geom_line 추가
+  for (i in seq_along(sensors)) {
+    p <- p + geom_line(aes_string(y = sensors[i], color = shQuote(labels[i])))
+  }
+  
+  # 나머지 설정 추가
+  title <- paste0("CO2, diff. between each sensors in board", board)
+  p <- p + 
+    labs(title = title,
+         x = 'Time(2min)', 
+         y = 'value',
+         color = 'Substance') +
+    scale_color_manual(values = setNames(colors, unique(labels)))
+  
+  # 플롯 출력
+  print(p)
+}
